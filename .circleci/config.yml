@@ -36,7 +36,7 @@ commands:
   deploy-save-cache-workspace-and-artifacts:
     steps:
       - save_cache:
-          key: v3-goreleaser-{{ checksum "~/goreleaser_amd64.deb" }}
+          key: v4-goreleaser-{{ checksum "~/goreleaser_amd64.deb" }}
           paths: [~/goreleaser_amd64.deb]
       - persist_to_workspace:
           root: .
@@ -46,19 +46,10 @@ commands:
           path: ./dist
           destination: dist
   install-goreleaser:
-    parameters:
-      GORELEASER_URL:
-        type: string
-        default: https://github.com/goreleaser/goreleaser/releases/download/v0.94.0/goreleaser_amd64.deb
     steps:
-      - restore_cache:
-          keys: [v3-goreleaser-]
       - run:
           name: Install GoReleaser
-          command: |
-            [ -f ~/goreleaser_amd64.deb ] || curl --silent --location --fail --retry 3 << parameters.GORELEASER_URL >> > ~/goreleaser_amd64.deb
-            sudo apt-get update -y
-            sudo apt install ~/goreleaser_amd64.deb
+          command: curl -sL https://git.io/goreleaser | bash
   gomod:
     steps:
       - restore_cache:
